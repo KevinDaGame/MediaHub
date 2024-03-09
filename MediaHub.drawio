@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-03-09T19:07:12.958Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0" etag="AmFz94cPwjg9uZAG5n02" version="21.5.0" type="github">
+<mxfile host="app.diagrams.net" modified="2024-03-09T19:09:39.979Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0" etag="VUeoX-Q3JPaeanvI-PCB" version="21.5.0" type="github">
   <diagram name="Page-1" id="FhG78EAFZ0hF4GGVFW7m">
     <mxGraphModel dx="795" dy="478" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -8,6 +8,9 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="xmg8euFB_mGIyqc1qGaj-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="xmg8euFB_mGIyqc1qGaj-2" target="xmg8euFB_mGIyqc1qGaj-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="xmg8euFB_mGIyqc1qGaj-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;" edge="1" parent="1" source="xmg8euFB_mGIyqc1qGaj-2" target="xmg8euFB_mGIyqc1qGaj-17">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="xmg8euFB_mGIyqc1qGaj-2" value="API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
@@ -42,6 +45,9 @@
         </mxCell>
         <mxCell id="xmg8euFB_mGIyqc1qGaj-12" value="Data access layer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
           <mxGeometry x="360" y="170" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="xmg8euFB_mGIyqc1qGaj-17" value="oauth" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.add_on;fillColor=#759C3E;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="130" y="290" width="49.5" height="27" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
