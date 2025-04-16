@@ -1,6 +1,6 @@
-﻿using MediaHub.DAL.FS.Model;
+﻿using MediaHub.DAL.Model;
 
-namespace MediaHub.DAL.FS.Repository;
+namespace MediaHub.DAL.Repository;
 
 public class MediaRepository
 {
@@ -23,10 +23,16 @@ public class MediaRepository
             .ToList();
     }
     
-    public Media? GetMedia(string path)
+    public Media? GetMediaByPath(string path)
     {
         return _context.Media
             .FirstOrDefault(media => media.Path == path);
+    }
+
+    public Media? GetMediaById(Guid id)
+    {
+        return _context.Media
+            .SingleOrDefault(media => media.Id == id);
     }
     
     public IEnumerable<Media> GetAllMediaQuery()

@@ -1,8 +1,8 @@
 ﻿using System.IO.Abstractions;
-using MediaHub.DAL.FS.Model;
-using MediaHub.DAL.FS.Services.MediaPath;
+using MediaHub.DAL.Model;
+using MediaHub.DAL.Services.MediaPath;
 
-namespace MediaHub.DAL.FS.Services.Thumbnail;
+namespace MediaHub.DAL.Services.Thumbnail;
 
 public class ThumbnailContext
 {

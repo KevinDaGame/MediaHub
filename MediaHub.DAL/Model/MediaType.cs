@@ -1,4 +1,4 @@
-﻿namespace MediaHub.DAL.FS.Model;
+﻿namespace MediaHub.DAL.Model;
 
 public enum MediaType
 {

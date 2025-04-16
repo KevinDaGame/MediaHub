@@ -1,13 +1,14 @@
+using System.IO.Abstractions;
 using Auth0.AspNetCore.Authentication;
 using MediaHub.API.Auth;
 using MediaHub.API.Components;
 using MediaHub.API.Service;
-using MediaHub.DAL.FS;
-using MediaHub.DAL.FS.Model;
-using MediaHub.DAL.FS.Repository;
-using MediaHub.DAL.FS.Services;
-using MediaHub.DAL.FS.Services.MediaPath;
-using MediaHub.DAL.FS.Services.Thumbnail;
+using MediaHub.DAL;
+using MediaHub.DAL.Model;
+using MediaHub.DAL.Repository;
+using MediaHub.DAL.Services;
+using MediaHub.DAL.Services.MediaPath;
+using MediaHub.DAL.Services.Thumbnail;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -142,7 +143,11 @@ void AddServices(IServiceCollection services)
     services.AddTransient<ThumbnailContext, ThumbnailContext>();
     services.AddTransient<MediaRepository, MediaRepository>();
     services.AddTransient<IMediaDiscoveryService, MediaDiscoveryService>();
-
+    
+    services.AddSingleton<MediaFileSystemWatcherHostedService>();
+    services.AddSingleton<IFileSystem, FileSystem>();
+    
     services.AddHostedService<ThumbnailHostedService>();
     services.AddHostedService<MediaHostedService>();
+    services.AddHostedService<MediaFileSystemWatcherHostedService>();
 }

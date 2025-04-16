@@ -1,5 +1,5 @@
-using MediaHub.DAL.FS.Model;
-using MediaHub.DAL.FS.Services;
+using MediaHub.DAL.Model;
+using MediaHub.DAL.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
@@ -33,9 +33,9 @@ public class MediaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("file")]
-    public IActionResult GetMediaFile([FromQuery] RelativePath path)
+    public IActionResult GetMediaFile([FromQuery] Guid id)
     {
-        var file = _mediaService.GetMediaFile(path);
+        var file = _mediaService.GetMediaFile(id);
         if (file == null)
         {
             return NotFound();

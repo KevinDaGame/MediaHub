@@ -1,12 +1,11 @@
 ﻿using System.IO.Abstractions;
 using System.IO.Compression;
-using System.Net.Mime;
 using System.Xml;
-using MediaHub.DAL.FS.Model;
-using MediaHub.DAL.FS.Services.MediaPath;
+using MediaHub.DAL.Model;
+using MediaHub.DAL.Services.MediaPath;
 using Xabe.FFmpeg;
 
-namespace MediaHub.DAL.FS.Services.Thumbnail;
+namespace MediaHub.DAL.Services.Thumbnail;
 
 public class EpubThumbnailStrategy : ThumbnailStrategy
 {

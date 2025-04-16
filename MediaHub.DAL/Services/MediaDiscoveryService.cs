@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.IO.Abstractions;
-using MediaHub.DAL.FS.Model;
-using MediaHub.DAL.FS.Repository;
-using MediaHub.DAL.FS.Services.MediaPath;
+﻿using System.IO.Abstractions;
+using MediaHub.DAL.Model;
+using MediaHub.DAL.Repository;
+using MediaHub.DAL.Services.MediaPath;
 
-namespace MediaHub.DAL.FS.Services;
+namespace MediaHub.DAL.Services;
 
 public class MediaDiscoveryService : IMediaDiscoveryService
 {
@@ -42,7 +41,7 @@ public class MediaDiscoveryService : IMediaDiscoveryService
     {
         Console.WriteLine("Cleaning up old media");
         IEnumerable<Media> media = _mediaRepository.GetAllMediaQuery();
-        List<Media> mediaToDelete = media.Where(mediaItem => !_fileSystem.File.Exists(_mediaPathService.CombineRootPath(mediaItem.Path))).ToList();
+        List<Media> mediaToDelete = media.Where(mediaItem => mediaItem.Type == MediaType.DIRECTORY ? !_fileSystem.Directory.Exists(mediaItem.Path) : !_fileSystem.File.Exists(mediaItem.Path)).ToList();
 
         _mediaRepository.DeleteMediaMultiple(mediaToDelete);
         
@@ -56,7 +55,7 @@ public class MediaDiscoveryService : IMediaDiscoveryService
         foreach (AbsolutePath entry in _fileSystem.Directory.GetFileSystemEntries(path).Select(file => (AbsolutePath) file))
         {
             RelativePath cleanPath = _mediaPathService.StripRootPath(entry);
-            Media? media = _mediaRepository.GetMedia(cleanPath);
+            Media? media = _mediaRepository.GetMediaByPath(cleanPath);
             Guid mediaId = media?.Id ?? Guid.NewGuid();
             if (media == null)
             {

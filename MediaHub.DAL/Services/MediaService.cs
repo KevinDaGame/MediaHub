@@ -1,9 +1,9 @@
 using System.IO.Abstractions;
-using MediaHub.DAL.FS.Model;
-using MediaHub.DAL.FS.Repository;
-using MediaHub.DAL.FS.Services.MediaPath;
+using MediaHub.DAL.Model;
+using MediaHub.DAL.Repository;
+using MediaHub.DAL.Services.MediaPath;
 
-namespace MediaHub.DAL.FS.Services;
+namespace MediaHub.DAL.Services;
 
 public class MediaService : IMediaService
 {
@@ -21,7 +21,8 @@ public class MediaService : IMediaService
         _mediaRepository = mediaRepository;
     }
 
-    public MediaService(RootPathService mediaPathService, IMediaThumbnailService mediaThumbnailService, MediaRepository mediaRepository) : this(
+    public MediaService(RootPathService mediaPathService, IMediaThumbnailService mediaThumbnailService,
+        MediaRepository mediaRepository) : this(
         mediaPathService, mediaThumbnailService, new FileSystem(), mediaRepository)
     {
     }
@@ -36,9 +37,26 @@ public class MediaService : IMediaService
         return _mediaRepository.getSubMedia(id);
     }
 
-    public FileInfo? GetMediaFile(RelativePath path)
+    public FileInfo? GetMediaFile(Guid id)
     {
-        AbsolutePath fullPath = _mediaPathService.CombineRootPath(path);
-        return _fileSystem.File.Exists(fullPath) ? new FileInfo(fullPath) : null;
+        Media? media = _mediaRepository.GetMediaById(id);
+        return media != null ? new FileInfo(media.Path) : null;
+    }
+
+    public List<Media> GetBreadCrumb(Guid? mediaId)
+    {
+        var breadCrumb = new List<Media>();
+
+        while (mediaId != null)
+        {
+            Media? media = _mediaRepository.GetMediaById(mediaId.Value);
+            if (media == null) break;
+
+            breadCrumb.Add(media);
+            mediaId = media.ParentId;
+        }
+
+        breadCrumb.Reverse();
+        return breadCrumb;
     }
 }

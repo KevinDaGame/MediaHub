@@ -1,4 +1,4 @@
-﻿using MediaHub.DAL.FS.Services;
+﻿using MediaHub.DAL.Services;
 
 namespace MediaHub.API.Service;
 

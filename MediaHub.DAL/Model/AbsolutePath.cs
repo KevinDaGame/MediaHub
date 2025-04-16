@@ -1,4 +1,4 @@
-﻿namespace MediaHub.DAL.FS.Model;
+﻿namespace MediaHub.DAL.Model;
 
 public class AbsolutePath
 {
@@ -7,6 +7,11 @@ public class AbsolutePath
     public AbsolutePath(string path)
     {
         Value = path;
+    }
+    
+    public AbsolutePath()
+    {
+        Value = string.Empty;
     }
     
     public static implicit operator string(AbsolutePath path)

@@ -1,8 +1,8 @@
-﻿using MediaHub.DAL.FS.Model;
+﻿using MediaHub.DAL.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MediaHub.DAL.FS;
+namespace MediaHub.DAL;
 
 public class MediaConfiguration: IEntityTypeConfiguration<Media>
 {

@@ -1,7 +1,7 @@
-﻿using MediaHub.DAL.FS.Model;
+﻿using MediaHub.DAL.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace MediaHub.DAL.FS;
+namespace MediaHub.DAL;
 
 public class MediaHubDBContext: DbContext
 {

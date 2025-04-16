@@ -1,7 +1,7 @@
 ﻿using System.IO.Abstractions;
-using MediaHub.DAL.FS.Model;
+using MediaHub.DAL.Model;
 
-namespace MediaHub.DAL.FS.Services.MediaPath;
+namespace MediaHub.DAL.Services.MediaPath;
 
 public abstract class MediaPathService : IMediaPathService
 {

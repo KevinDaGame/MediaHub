@@ -1,6 +1,6 @@
 ﻿@using System.Web
-@using MediaHub.DAL.FS.Model
-@using MediaHub.DAL.FS.Services
+@using MediaHub.DAL.Model
+@using MediaHub.DAL.Services
 
 @rendermode InteractiveServer
 
@@ -11,9 +11,9 @@
 @inject NavigationManager Navigator
 @inject IJSRuntime JSRuntime
 
-<MediaBreadCrumb path="@Path" ChangePathCallBack="ChangePathCallBack"/>
+<MediaBreadCrumb id="@Id" ChangePathCallBack="ChangePathCallBack"/>
 <div class="flex flex-wrap gap-5 m-5">
-    @foreach (var item in MediaList)
+    @foreach (var item in _mediaList)
     {
         <div
             class="group text-white p-2 border-2 border-emerald-400 hover:border-rose-400 transition-colors rounded-2xl bg-gray-900 w-64 flex flex-col gap-2 relative" accesskey
@@ -32,24 +32,38 @@
         </div>
     }
 </div>
+<script>
+  window.triggerFileDownload = (fileName, url) => {
+    const anchorElement = document.createElement('a');
+    anchorElement.href = url;
+    anchorElement.download = fileName ?? '';
+    anchorElement.click();
+    anchorElement.remove();
+  }
+</script>
+
 
 
 @code {
-    private IEnumerable<IMedia> MediaList;
+    private IEnumerable<DAL.Model.Media> _mediaList = [];
 
-    [SupplyParameterFromQuery(Name = "path")]
-    private string? Path { get; set; }
+    [SupplyParameterFromQuery(Name = "id")]
+    private Guid? Id { get; set; }
 
-    public EventCallback<string> ChangePathCallBack { get; set; }
+    public EventCallback<Guid?> ChangePathCallBack { get; set; }
 
     protected override void OnInitialized()
     {
-        ChangePathCallBack = EventCallback.Factory.Create<string>(this, ChangePath);
+        ChangePathCallBack = EventCallback.Factory.Create<Guid?>(this, ChangeMediaId);
     }
 
-    private void ChangePath(string newPath)
+    private void ChangeMediaId(Guid? newId)
     {
-        Navigator.NavigateTo("media?path=" + HttpUtility.UrlEncode(newPath));
+        if(newId == null)
+        {
+         Navigator.NavigateTo("media");
+        }
+        Navigator.NavigateTo("media?id=" + newId);
     }
 
     protected override void OnParametersSet()
@@ -59,31 +73,36 @@
 
     private void GetMedia()
     {
-        MediaList = string.IsNullOrEmpty(Path) ? MediaService.GetMedia() : MediaService.GetMedia(Path);
+        _mediaList = Id != null ? MediaService.GetMedia(Id.Value) : MediaService.GetMedia();
     }
 
-    public string GetThumbnailUrl(IMedia media)
+    public string GetThumbnailUrl(DAL.Model.Media media)
     {
         return media.ThumbnailUrl != null ? Navigator.BaseUri + "api/media/thumbnail?path=" + HttpUtility.UrlEncode(media.ThumbnailUrl) : "movie.png";
     }
 
-    private async Task HandleItemClick(IMedia item)
+    private async Task HandleItemClick(DAL.Model.Media item)
     {
         switch (item.Type)
         {
             case MediaType.DIRECTORY:
-                Navigator.NavigateTo("media?path=" + HttpUtility.UrlEncode(item.Path));
+                ChangeMediaId(item.Id);
                 GetMedia();
                 break;
             case MediaType.FILE:
-                Navigator.NavigateTo("api/media/file?path=" + HttpUtility.UrlEncode(item.Path));
+                // Navigator.NavigateTo("api/media/file?id=" + item.Id);
+                //download file without navigating
+                var fileUrl = Navigator.BaseUri + "api/media/file?id=" + item.Id;
+                var fileName = item.Name;
+                await JSRuntime.InvokeVoidAsync("triggerFileDownload", fileName, fileUrl);
+                
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
     }
 
-    private void CopyLink(IMedia item)
+    private void CopyLink(DAL.Model.Media item)
     {
         JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", Navigator.BaseUri + "api/media/file?path=" + HttpUtility.UrlEncode(item.Path));
     }

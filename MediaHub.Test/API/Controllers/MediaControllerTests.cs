@@ -1,6 +1,7 @@
 using MediaHub.API.Controllers;
 using MediaHub.DAL.FS.Model;
-using MediaHub.DAL.FS.Services;
+using MediaHub.DAL.Model;
+using MediaHub.DAL.Services;
 using Microsoft.Extensions.Logging;
 using Moq;
 

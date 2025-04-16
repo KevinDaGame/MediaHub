@@ -1,6 +1,6 @@
-﻿using MediaHub.DAL.FS.Model;
+﻿using MediaHub.DAL.Model;
 
-namespace MediaHub.DAL.FS.Services;
+namespace MediaHub.DAL.Services;
 
 public interface IMediaThumbnailService
 {

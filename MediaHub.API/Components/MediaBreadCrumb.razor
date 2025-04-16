@@ -1,14 +1,17 @@
-﻿<nav class="flex mx-5" aria-label="Breadcrumb">
+﻿@using MediaHub.DAL.Services
+@inject IMediaService MediaService
+
+<nav class="flex mx-5" aria-label="Breadcrumb">
     <ol class="inline-flex items-center rtl:space-x-reverse">
-        <li class="inline-flex items-center" @onclick="() => ChangePathCallBack.InvokeAsync(string.Empty)">
+        <li class="inline-flex items-center" @onclick="() => ChangePathCallBack.InvokeAsync(null)">
             <span
                 class="inline-flex items-center text-3xl font-medium text-rose-500 hover:text-rose-400">
                 Home/
             </span>
         </li>
-        @foreach (var item in pathParts)
+        @foreach (var item in breadCrumbParts)
         {
-            <li class="inline-flex items-center text-rose-500 hover:text-rose-400 flex items-center" @onclick="() => ChangePathCallBack.InvokeAsync(item.path)">
+            <li class="inline-flex items-center text-rose-500 hover:text-rose-400 flex items-center" @onclick="() => ChangePathCallBack.InvokeAsync(item.id)">
                 <svg class="rtl:rotate-180 w-5 h-5 mx-1 text-emerald-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                      fill="none" viewBox="0 0 6 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
@@ -23,31 +26,31 @@
 </nav>
 
 @code {
-    [Parameter] public string? Path { get; set; }
-    [Parameter] public EventCallback<string> ChangePathCallBack { get; set; }
+    [Parameter] public Guid? Id { get; set; }
+    [Parameter] public EventCallback<Guid?> ChangePathCallBack { get; set; }
 
-    private List<(string title, string path)> pathParts = new List<(string title, string path)>();
+    private List<(string title, Guid id)> breadCrumbParts = new List<(string title, Guid id)>();
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        pathParts = GetPathParts(Path);
+        breadCrumbParts = GetPathParts();
     }
 
-    private List<(string title, string path)> GetPathParts(string? path)
+    private List<(string title, Guid id)> GetPathParts()
     {
-        if(string.IsNullOrEmpty(path))
+        if(Id == null)
         {
             return [];
         }
-        return path
-            .Split("/")
-            .Where(x => !string.IsNullOrEmpty(x))
-            .Select((x, i) =>
+
+        var breadcrumb = MediaService.GetBreadCrumb(Id);
+        return breadcrumb
+            .Select((media, i) =>
             {
-                var title = x;
-                var pathNew = string.Join("/", path.Split("/").Take(i + 1));
-                return (title, pathNew);
+                var title = media.Name;
+               
+                return (title, media.Id);
             }).ToList();
     }
 

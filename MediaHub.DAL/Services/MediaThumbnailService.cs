@@ -1,10 +1,9 @@
 ﻿using System.IO.Abstractions;
-using MediaHub.DAL.FS.Model;
-using MediaHub.DAL.FS.Services.MediaPath;
-using MediaHub.DAL.FS.Services.Thumbnail;
-using Xabe.FFmpeg;
+using MediaHub.DAL.Model;
+using MediaHub.DAL.Services.MediaPath;
+using MediaHub.DAL.Services.Thumbnail;
 
-namespace MediaHub.DAL.FS.Services;
+namespace MediaHub.DAL.Services;
 
 public class MediaThumbnailService : IMediaThumbnailService
 {

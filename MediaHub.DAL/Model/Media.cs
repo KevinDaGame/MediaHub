@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace MediaHub.DAL.FS.Model;
+namespace MediaHub.DAL.Model;
 
 public partial class Media
 {

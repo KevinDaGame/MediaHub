@@ -1,4 +1,4 @@
-﻿namespace MediaHub.DAL.FS.Model;
+﻿namespace MediaHub.DAL.Model;
 
 public class RelativePath
 {
@@ -7,6 +7,11 @@ public class RelativePath
     public RelativePath(string path)
     {
         Value = path;
+    }
+    
+    public RelativePath()
+    {
+        Value = string.Empty;
     }
     
     public static implicit operator string(RelativePath path)
