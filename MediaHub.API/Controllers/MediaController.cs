@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.StaticFiles;
 namespace MediaHub.API.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class MediaController : ControllerBase
 {
     private readonly ILogger<MediaController> _logger;

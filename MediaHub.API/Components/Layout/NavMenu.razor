@@ -1,0 +1,51 @@
+﻿<header class="bg-gray-950 border-emerald-400 border text-emerald-400 m-3 rounded-2xl">
+    <nav class="flex p-6 lg:px-8 items-center justify-between">
+
+        <div class="flex items-center lg:flex-1">
+            <h2 class="text-2xl">MediaHub</h2>
+        </div>
+        <AuthorizeView>
+            <Authorized>
+
+                <div class="flex gap-5">
+                    <div class="flex items-center">
+                        <span class="font-medium hidden sm:block text-lg mr-2">@Username</span>
+                    </div>
+                    <a href="Account/Logout"
+                       class="text-white bg-rose-500 hover:bg-emerald-400 font-medium rounded-lg text-lg px-5 py-2.5">
+                        Log out
+                    </a>
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                <a href="Account/Login"
+                        class="text-white bg-emerald-400 hover:bg-rose-500 font-medium rounded-lg text-lg px-5 py-2.5"
+                        (click)="auth.loginWithRedirect()">
+                    Login
+                </a>
+            </NotAuthorized>
+        </AuthorizeView>
+    </nav>
+</header>
+@code
+{
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
+    private string Username = "";
+    // 👆 new code
+
+    protected override async Task OnInitializedAsync()
+    {
+        // ...existing code...
+
+        // 👇 new code
+        if (authenticationState is not null)
+        {
+            var state = await authenticationState;
+
+            Username = state?.User?.Identity?.Name ?? string.Empty;
+        }
+        // 👆 new code
+    }
+}

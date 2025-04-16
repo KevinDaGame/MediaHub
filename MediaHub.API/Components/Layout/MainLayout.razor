@@ -1,0 +1,20 @@
+﻿@inherits LayoutComponentBase
+
+<div class="bg-slate-800 min-h-screen py-3">
+    <NavMenu></NavMenu>
+
+    <AuthorizeView>
+        <Authorized>
+            @Body
+        </Authorized>
+        <NotAuthorized>
+            <h2 class="text-5xl text-white text-center mt-5">You are not logged in you idiot</h2>
+        </NotAuthorized>
+    </AuthorizeView>
+</div>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>

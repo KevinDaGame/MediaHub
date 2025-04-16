@@ -1,0 +1,54 @@
+﻿<nav class="flex mx-5" aria-label="Breadcrumb">
+    <ol class="inline-flex items-center rtl:space-x-reverse">
+        <li class="inline-flex items-center" @onclick="() => ChangePathCallBack.InvokeAsync(string.Empty)">
+            <span
+                class="inline-flex items-center text-3xl font-medium text-rose-500 hover:text-rose-400">
+                Home/
+            </span>
+        </li>
+        @foreach (var item in pathParts)
+        {
+            <li class="inline-flex items-center text-rose-500 hover:text-rose-400 flex items-center" @onclick="() => ChangePathCallBack.InvokeAsync(item.path)">
+                <svg class="rtl:rotate-180 w-5 h-5 mx-1 text-emerald-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                     fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                </svg>
+                <span
+                    class="inline-flex items-center text-3xl font-medium">
+                    @item.title
+                </span>
+            </li>
+        }
+    </ol>
+</nav>
+
+@code {
+    [Parameter] public string? Path { get; set; }
+    [Parameter] public EventCallback<string> ChangePathCallBack { get; set; }
+
+    private List<(string title, string path)> pathParts = new List<(string title, string path)>();
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        pathParts = GetPathParts(Path);
+    }
+
+    private List<(string title, string path)> GetPathParts(string? path)
+    {
+        if(string.IsNullOrEmpty(path))
+        {
+            return [];
+        }
+        return path
+            .Split("/")
+            .Where(x => !string.IsNullOrEmpty(x))
+            .Select((x, i) =>
+            {
+                var title = x;
+                var pathNew = string.Join("/", path.Split("/").Take(i + 1));
+                return (title, pathNew);
+            }).ToList();
+    }
+
+}

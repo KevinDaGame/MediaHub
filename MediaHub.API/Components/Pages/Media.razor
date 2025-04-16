@@ -1,0 +1,91 @@
+﻿@using System.Web
+@using MediaHub.DAL.FS.Model
+@using MediaHub.DAL.FS.Services
+
+@rendermode InteractiveServer
+
+@page "/media"
+@page "/"
+
+@inject IMediaService MediaService
+@inject NavigationManager Navigator
+@inject IJSRuntime JSRuntime
+
+<MediaBreadCrumb path="@Path" ChangePathCallBack="ChangePathCallBack"/>
+<div class="flex flex-wrap gap-5 m-5">
+    @foreach (var item in MediaList)
+    {
+        <div
+            class="group text-white p-2 border-2 border-emerald-400 hover:border-rose-400 transition-colors rounded-2xl bg-gray-900 w-64 flex flex-col gap-2 relative" accesskey
+            @onclick="() => HandleItemClick(item)">
+            @if (item.Type == MediaType.FILE)
+            {
+                <button @onclick:stopPropagation="@true" @onclick="() => CopyLink(item)"
+                        class="absolute right-0 bg-blue-500 hover:bg-blue-400 group-hover:visible invisible m-3 mr-4 p-2 rounded-md shadow">
+                    <i
+                        class="fa-solid fa-link">
+                    </i>
+                </button>
+            }
+            <img class="" src="@GetThumbnailUrl(item)" width="600" height="300" alt="Card image cap">
+            <h5 class="text-xl">@item.Name</h5>
+        </div>
+    }
+</div>
+
+
+@code {
+    private IEnumerable<IMedia> MediaList;
+
+    [SupplyParameterFromQuery(Name = "path")]
+    private string? Path { get; set; }
+
+    public EventCallback<string> ChangePathCallBack { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ChangePathCallBack = EventCallback.Factory.Create<string>(this, ChangePath);
+    }
+
+    private void ChangePath(string newPath)
+    {
+        Navigator.NavigateTo("media?path=" + HttpUtility.UrlEncode(newPath));
+    }
+
+    protected override void OnParametersSet()
+    {
+        GetMedia();
+    }
+
+    private void GetMedia()
+    {
+        MediaList = string.IsNullOrEmpty(Path) ? MediaService.GetMedia() : MediaService.GetMedia(Path);
+    }
+
+    public string GetThumbnailUrl(IMedia media)
+    {
+        return media.ThumbnailUrl != null ? Navigator.BaseUri + "api/media/thumbnail?path=" + HttpUtility.UrlEncode(media.ThumbnailUrl) : "movie.png";
+    }
+
+    private async Task HandleItemClick(IMedia item)
+    {
+        switch (item.Type)
+        {
+            case MediaType.DIRECTORY:
+                Navigator.NavigateTo("media?path=" + HttpUtility.UrlEncode(item.Path));
+                GetMedia();
+                break;
+            case MediaType.FILE:
+                Navigator.NavigateTo("api/media/file?path=" + HttpUtility.UrlEncode(item.Path));
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private void CopyLink(IMedia item)
+    {
+        JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", Navigator.BaseUri + "api/media/file?path=" + HttpUtility.UrlEncode(item.Path));
+    }
+
+}
