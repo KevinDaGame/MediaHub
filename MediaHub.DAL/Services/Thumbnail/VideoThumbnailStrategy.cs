@@ -1,4 +1,5 @@
 ﻿using System.IO.Abstractions;
+using MediaHub.DAL.FS.Model;
 using MediaHub.DAL.FS.Services.MediaPath;
 using Xabe.FFmpeg;
 
@@ -11,13 +12,13 @@ public class VideoThumbnailStrategy: ThumbnailStrategy
     {
     }
     
-    public override async Task ExtractThumbnail(string path)
+    public override async Task ExtractThumbnail(RelativePath path)
     {
         // Construct the full path of the media file
-        string mediaFilePath = RootPath.CombineRootPath(path);
+        AbsolutePath mediaFilePath = RootPath.CombineRootPath(path);
 
         // Construct the output thumbnail file path
-        string thumbnailFilePath = ThumbnailPath.CombineRootPath(path + ".webp");
+        AbsolutePath thumbnailFilePath = ThumbnailPath.CombineRootPath(path + ".webp");
 
         // Extract the thumbnail halfway through the video
         var halfway = TimeSpan.FromSeconds(FFmpeg.GetMediaInfo(mediaFilePath).Result.Duration.TotalSeconds / 2);

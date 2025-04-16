@@ -1,4 +1,5 @@
 ﻿using System.IO.Abstractions;
+using MediaHub.DAL.FS.Model;
 using MediaHub.DAL.FS.Services.MediaPath;
 
 namespace MediaHub.DAL.FS.Services.Thumbnail;
@@ -31,7 +32,7 @@ public class ThumbnailContext
     {
     }
 
-    public Task ExtractThumbnail(string path)
+    public Task ExtractThumbnail(RelativePath path)
     {
         string extension = Path.GetExtension(path).TrimStart('.');
 

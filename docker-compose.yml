@@ -2,11 +2,51 @@ version: '3.4'
 
 services:
   mediahub.api:
-    image: kevdadev/mediahub-api:develop
+    build:
+        context: .
+        dockerfile: ./MediaHub.API/Dockerfile
     ports:
       - "5000:80"
-
+    volumes:
+      - /home/kevin/external-drive/mediahub:/app/media
   mediahub.web:
     image: kevdadev/mediahub-web:develop
     ports:
-      - "3000:80"
+      - "5001:80"
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - WEBUI_PORT=8080
+    volumes:
+      - ~/external-drive/torrent/config:/config
+      - ~/external-drive/mediahub:/downloads
+    restart: unless-stopped
+    network_mode: service:surfshark
+    depends_on:
+      - surfshark
+  surfshark:
+    image: ilteoood/docker-surfshark
+    container_name: surfshark
+    environment:
+      - SURFSHARK_USER=hWtMYJSXGySMWP8UKz46Ts6a
+      - SURFSHARK_PASSWORD=n6LJHMH54P9KdA5nZ9CQXVrt
+      - SURFSHARK_COUNTRY=nl
+      - SURFSHARK_CITY=ams
+      - CONNECTION_TYPE=udp
+      - LAN_NETWORK=
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    ports:
+      - 1080:1080 #if you want to use the socks5 server
+      - 9091:9091 #we open here the port for transmission, as this container will be the access point for the others
+      - 5002:8080
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+    dns:
+      - 1.1.1.1                                              

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
@@ -20,7 +20,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\MediaHub.API\MediaHub.API.csproj" />
-      <ProjectReference Include="..\MediaHub.DAL.FS\MediaHub.DAL.FS.csproj" />
+      <ProjectReference Include="..\MediaHub.DAL\MediaHub.DAL.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,14 +1,20 @@
 using MediaHub.API.Auth;
 using MediaHub.API.Service;
+using MediaHub.DAL.FS;
+using MediaHub.DAL.FS.Model;
+using MediaHub.DAL.FS.Repository;
 using MediaHub.DAL.FS.Services;
 using MediaHub.DAL.FS.Services.MediaPath;
 using MediaHub.DAL.FS.Services.Thumbnail;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 
 string rootPath = Directory.GetCurrentDirectory() + "/media";
 string thumbnailPath = Directory.GetCurrentDirectory() + "/thumbnails";
+
+string mysqlConnection = Environment.GetEnvironmentVariable("MYSQL_CONNECTION_STRING");
 
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -44,11 +50,23 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
+builder.Services.AddDbContext<MediaHubDBContext>(options =>
+{
+    options.UseMySql(mysqlConnection, ServerVersion.AutoDetect(mysqlConnection));
+});
+
+using(var context = new MediaHubDBContext(new DbContextOptionsBuilder<MediaHubDBContext>().UseMySql(mysqlConnection, ServerVersion.AutoDetect(mysqlConnection)).Options))
+{
+    context.Database.EnsureCreated();
+}
+
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+//swagger with auth
+builder.Services.AddSwaggerGen( );
 AddServices(builder.Services);
 
 WebApplication app = builder.Build();
@@ -74,11 +92,14 @@ return;
 void AddServices(IServiceCollection services)
 {
     services.AddLogging();
-    services.AddTransient<RootPathService, RootPathService>(_ => new RootPathService(rootPath));
-    services.AddTransient<ThumbnailPathService, ThumbnailPathService>(_ => new ThumbnailPathService(thumbnailPath));
+    services.AddTransient<RootPathService, RootPathService>(_ => new RootPathService((AbsolutePath)rootPath));
+    services.AddTransient<ThumbnailPathService, ThumbnailPathService>(_ => new ThumbnailPathService((AbsolutePath)thumbnailPath));
     services.AddTransient<IMediaService, MediaService>();
     services.AddTransient<IMediaThumbnailService, MediaThumbnailService>();
     services.AddTransient<ThumbnailContext, ThumbnailContext>();
+    services.AddTransient<MediaRepository, MediaRepository>();
+    services.AddTransient<IMediaDiscoveryService, MediaDiscoveryService>();
 
     services.AddHostedService<ThumbnailHostedService>();
+    services.AddHostedService<MediaHostedService>();
 }

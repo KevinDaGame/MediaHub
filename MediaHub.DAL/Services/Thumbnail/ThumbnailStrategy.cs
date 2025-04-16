@@ -1,4 +1,5 @@
 ﻿using System.IO.Abstractions;
+using MediaHub.DAL.FS.Model;
 using MediaHub.DAL.FS.Services.MediaPath;
 
 namespace MediaHub.DAL.FS.Services.Thumbnail;
@@ -18,5 +19,5 @@ public abstract class ThumbnailStrategy: IThumbnailStrategy
     
     public abstract IEnumerable<string> SupportedExtensions { get; }
 
-    public abstract Task ExtractThumbnail(string path);
+    public abstract Task ExtractThumbnail(RelativePath path);
 }

@@ -24,7 +24,7 @@ public class MediaServiceTests
         var service = new MediaService(root, mockFileSystem);
 
         // Act
-        List<IMedia> result = service.GetMedia().ToList();
+        List<Media> result = service.GetMedia().ToList();
 
         // Assert
         Assert.AreEqual(3, result.Count);

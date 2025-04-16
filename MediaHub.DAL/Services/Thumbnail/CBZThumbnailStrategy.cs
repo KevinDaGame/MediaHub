@@ -2,6 +2,7 @@
 using System.IO.Compression;
 using System.Net.Mime;
 using System.Xml;
+using MediaHub.DAL.FS.Model;
 using MediaHub.DAL.FS.Services.MediaPath;
 using Xabe.FFmpeg;
 
@@ -16,13 +17,13 @@ public class CBZThumbnailStrategy : ThumbnailStrategy
 
     public override IEnumerable<string> SupportedExtensions { get; } = new[] { "cbz" };
 
-    public override async Task ExtractThumbnail(string path)
+    public override async Task ExtractThumbnail(RelativePath path)
     {
         // Construct the full path of the media file
-        string mediaFilePath = RootPath.CombineRootPath(path);
+        AbsolutePath mediaFilePath = RootPath.CombineRootPath(path);
 
         // Construct the output thumbnail file path
-        string thumbnailFilePath = ThumbnailPath.CombineRootPath(path + ".webp");
+        AbsolutePath thumbnailFilePath = ThumbnailPath.CombineRootPath(path + ".webp");
 
         using ZipArchive zip = ZipFile.OpenRead(mediaFilePath);
 

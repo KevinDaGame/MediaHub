@@ -2,13 +2,15 @@ using System.Text.RegularExpressions;
 
 namespace MediaHub.DAL.FS.Model;
 
-public partial class Media : IMedia
+public partial class Media
 {
+    public required Guid Id { get; set; }
+    public Guid? ParentId { get; set; }
     public required string Name { get; set; }
-    public required string Path { get; set; }
+    public required RelativePath Path { get; set; }
     public string? ThumbnailUrl { get; set; }
     public required MediaType Type { get; set; }
-    public IEnumerable<IMedia> Children { get; set; }
+    public IEnumerable<Media> Children { get; set; }
 
     public int ExtractNumericValueFromName()
     {

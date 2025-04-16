@@ -24,16 +24,16 @@ public class MediaController : ControllerBase
     [HttpGet]
     [Authorize("read:media")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IEnumerable<IMedia> GetMedia([FromQuery] string? path)
+    public IEnumerable<Media> GetMedia([FromQuery] Guid? id)
     {
-        return string.IsNullOrEmpty(path) ? _mediaService.GetMedia() : _mediaService.GetMedia(path);
+        return id.HasValue ? _mediaService.GetMedia(id.Value) : _mediaService.GetMedia();
     }
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("file")]
-    public IActionResult GetMediaFile([FromQuery] string path)
+    public IActionResult GetMediaFile([FromQuery] RelativePath path)
     {
         var file = _mediaService.GetMediaFile(path);
         if (file == null)
@@ -55,7 +55,7 @@ public class MediaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("thumbnail")]
-    public IActionResult GetThumbnail([FromQuery] string path)
+    public IActionResult GetThumbnail([FromQuery] RelativePath path)
     {
         var thumbnail = _mediaThumbnailService.GetThumbnail(path);
         if (thumbnail == null)

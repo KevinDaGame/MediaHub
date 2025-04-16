@@ -13,18 +13,18 @@ public class MediaControllerTests
     public void GetMedia_ReturnsMedia_WhenServiceReturnsMedia()
     {
         // Arrange
-        var media = new List<IMedia>
+        var media = new List<Media>
         {
-            new Media { Name = "folder1", Path = "", Type = MediaType.DIRECTORY},
-            new Media { Name = "file1.txt", Path = "", Type = MediaType.FILE },
-            new Media { Name = "file2.txt", Path = "", Type = MediaType.FILE }
+            new Media { Id = Guid.Empty, Name = "folder1", Path = (RelativePath)"", Type = MediaType.DIRECTORY},
+            new Media { Id = Guid.Empty, Name = "file1.txt", Path = (RelativePath)"", Type = MediaType.FILE },
+            new Media { Id = Guid.Empty, Name = "file2.txt", Path = (RelativePath)"", Type = MediaType.FILE }
         };
         var mockService = new Mock<IMediaService>();
         mockService.Setup(service => service.GetMedia()).Returns(media);
         var controller = new MediaController(new Mock<ILogger<MediaController>>().Object, mockService.Object);
 
         // Act
-        IEnumerable<IMedia> result = controller.GetMedia(null);
+        IEnumerable<Media> result = controller.GetMedia(null);
 
         // Assert
         Assert.AreEqual(media, result);
@@ -34,18 +34,18 @@ public class MediaControllerTests
     public void GetMedia_ReturnsMedia_WhenServiceReturnsMediaForPath()
     {
         // Arrange
-        var media = new List<IMedia>
+        var media = new List<Media>
         {
-            new Media { Name = "folder1", Path = "", Type = MediaType.DIRECTORY},
-            new Media { Name = "file1.txt", Path = "", Type = MediaType.FILE },
-            new Media { Name = "file2.txt", Path = "", Type = MediaType.FILE }
+            new Media { Id = Guid.Empty, Name = "folder1", Path = (RelativePath)"", Type = MediaType.DIRECTORY},
+            new Media { Id = Guid.Empty, Name = "file1.txt", Path = (RelativePath)"", Type = MediaType.FILE },
+            new Media { Id = Guid.Empty, Name = "file2.txt", Path = (RelativePath)"", Type = MediaType.FILE }
         };
         var mockService = new Mock<IMediaService>();
         mockService.Setup(service => service.GetMedia("path")).Returns(media);
         var controller = new MediaController(new Mock<ILogger<MediaController>>().Object, mockService.Object);
 
         // Act
-        IEnumerable<IMedia> result = controller.GetMedia("path");
+        IEnumerable<Media> result = controller.GetMedia("path");
 
         // Assert
         Assert.AreEqual(media, result);

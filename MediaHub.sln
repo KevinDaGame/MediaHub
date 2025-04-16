@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaHub.API", "MediaHub.API\MediaHub.API.csproj", "{EC431B98-F2F7-429B-9054-7A8843E81DC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaHub.DAL.FS", "MediaHub.DAL.FS\MediaHub.DAL.FS.csproj", "{0FAB20BD-0239-4C13-BF41-D915B9414BE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaHub.DAL", "MediaHub.DAL\MediaHub.DAL.csproj", "{0FAB20BD-0239-4C13-BF41-D915B9414BE1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaHub.Test", "MediaHub.Test\MediaHub.Test.csproj", "{9220C10F-1A27-4175-A534-ADE1A7F76C43}"
 EndProject
