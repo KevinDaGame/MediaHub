@@ -1,18 +1,27 @@
 version: '3.4'
 
 services:
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: mediahub
+      MYSQL_ROOT_PASSWORD: example
+    volumes:
+      - db_data:/var/lib/mysql
   mediahub.api:
     build:
         context: .
         dockerfile: ./MediaHub.API/Dockerfile
     ports:
-      - "5000:80"
+      - "5000:8080"
+    environment:
+      - MYSQL_CONNECTION_STRING=server=db;port=3306;database=mediahub;user=root;password=example;sslmode=none;
     volumes:
-      - /home/kevin/external-drive/mediahub:/app/media
-  mediahub.web:
-    image: kevdadev/mediahub-web:develop
-    ports:
-      - "5001:80"
+      - C:\Users\kevin\RiderProjects\MediaHub\MediaHub.API\media:/app/media
+      - C:\Users\kevin\RiderProjects\MediaHub\MediaHub.API\thumbnails:/app/thumbnails
+    depends_on:
+      - db
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     environment:
@@ -49,4 +58,6 @@ services:
       - 6881:6881/udp
     restart: unless-stopped
     dns:
-      - 1.1.1.1                                              
+      - 1.1.1.1          
+volumes:
+  db_data:

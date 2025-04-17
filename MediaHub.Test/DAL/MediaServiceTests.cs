@@ -1,9 +1,8 @@
 using System.IO.Abstractions.TestingHelpers;
-using MediaHub.DAL.FS.Model;
 using MediaHub.DAL.Model;
 using MediaHub.DAL.Services;
 
-namespace MediaHub.Test.DAL.FS;
+namespace MediaHub.Test.DAL;
 
 [TestClass]
 public class MediaServiceTests

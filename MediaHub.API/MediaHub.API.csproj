@@ -28,10 +28,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MediaHub.DAL.FS\MediaHub.DAL.FS.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <AdditionalFiles Include="Components\App.razor" />
       <AdditionalFiles Include="Components\Layout\MainLayout.razor" />
       <AdditionalFiles Include="Components\Layout\NavMenu.razor" />
