@@ -43,7 +43,7 @@ public class MediaService : IMediaService
     public FileInfo? GetMediaFile(Guid id)
     {
         Media? media = _mediaRepository.GetMediaById(id);
-        return media != null ? new FileInfo(media.Path) : null;
+        return media != null ? new FileInfo(_mediaPathService.CombineRootPath(media.Path)) : null;
     }
 
     public List<Media> GetBreadCrumb(Guid? mediaId)
