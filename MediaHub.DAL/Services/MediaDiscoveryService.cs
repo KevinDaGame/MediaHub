@@ -41,7 +41,7 @@ public class MediaDiscoveryService : IMediaDiscoveryService
     {
         Console.WriteLine("Cleaning up old media");
         IEnumerable<Media> media = _mediaRepository.GetAllMediaQuery();
-        List<Media> mediaToDelete = media.Where(mediaItem => mediaItem.Type == MediaType.DIRECTORY ? !_fileSystem.Directory.Exists(mediaItem.Path) : !_fileSystem.File.Exists(mediaItem.Path)).ToList();
+        List<Media> mediaToDelete = media.Where(mediaItem => mediaItem.Type == MediaType.DIRECTORY ? !_fileSystem.Directory.Exists(_mediaPathService.CombineRootPath(mediaItem.Path)) : !_fileSystem.File.Exists(_mediaPathService.CombineRootPath(mediaItem.Path))).ToList();
 
         _mediaRepository.DeleteMediaMultiple(mediaToDelete);
         
