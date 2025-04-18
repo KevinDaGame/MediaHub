@@ -20,7 +20,7 @@
             <NotAuthorized>
                 <a href="Account/Login"
                         class="text-white bg-emerald-400 hover:bg-rose-500 font-medium rounded-lg text-lg px-5 py-2.5"
-                        (click)="auth.loginWithRedirect()">
+                        (click)="auth.loginWithRedirect({authorizationParams: {redirect_uri: 'https://mediahub.kevda.dev'}})">
                     Login
                 </a>
             </NotAuthorized>
