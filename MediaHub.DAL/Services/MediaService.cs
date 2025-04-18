@@ -34,7 +34,10 @@ public class MediaService : IMediaService
 
     public IEnumerable<Media> GetMedia(Guid id)
     {
-        return _mediaRepository.getSubMedia(id);
+        return _mediaRepository.getSubMedia(id)
+            .OrderBy(it => it.Type)
+            .ThenBy(it => it.ExtractNumericValueFromName())
+            .ThenBy(it => it.Name);
     }
 
     public FileInfo? GetMediaFile(Guid id)
