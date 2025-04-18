@@ -12,7 +12,8 @@
                         <span class="font-medium hidden sm:block text-lg mr-2">@Username</span>
                     </div>
                     <a href="Account/Logout"
-                       class="text-white bg-rose-500 hover:bg-emerald-400 font-medium rounded-lg text-lg px-5 py-2.5">
+                       class="text-white bg-rose-500 hover:bg-emerald-400 font-medium rounded-lg text-lg px-5 py-2.5"
+                       (click)="auth.logout({ postLogoutRedirectUri: '/' })">
                         Log out
                     </a>
                 </div>
