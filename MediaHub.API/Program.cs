@@ -143,7 +143,10 @@ void AddServices(IServiceCollection services)
     services.AddTransient<IMediaThumbnailService, MediaThumbnailService>();
     services.AddTransient<ThumbnailContext, ThumbnailContext>();
     services.AddTransient<MediaRepository, MediaRepository>();
+    services.AddTransient<WatchedMediaRepository, WatchedMediaRepository>();
+    services.AddTransient<IWatchTrackingService, WatchTrackingService>();
     services.AddTransient<IMediaDiscoveryService, MediaDiscoveryService>();
+    services.AddTransient<MediaWithWatchStatusService, MediaWithWatchStatusService>();
     
     services.AddSingleton<MediaFileSystemWatcherHostedService>();
     services.AddSingleton<IFileSystem, FileSystem>();

@@ -2,6 +2,9 @@
 @using MediaHub.DAL.Model
 @using MediaHub.DAL.Services
 @using MediaHub.API.Components.Dropdown
+@using MediaHub.API.Models
+@using MediaHub.API.Services
+@using System.Security.Claims
 
 @rendermode InteractiveServer
 
@@ -9,8 +12,10 @@
 @page "/"
 
 @inject IMediaService MediaService
+@inject MediaWithWatchStatusService MediaWithWatchStatusService
 @inject NavigationManager Navigator
 @inject IJSRuntime JSRuntime
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <MediaBreadCrumb id="@Id" ChangePathCallBack="ChangePathCallBack"/>
 <div class="flex flex-wrap gap-5 m-5">
@@ -26,6 +31,13 @@
                         <DropdownItem OnClick="@(() => CopyLink(item))">Copy link</DropdownItem>
                     </Dropdown>
                 </div>
+                
+                @if (item.IsWatched)
+                {
+                    <div class="absolute top-3 left-3 bg-green-600 text-white px-2 py-1 rounded-md z-10">
+                        <i class="fa-solid fa-check"></i> Watched
+                    </div>
+                }
             }
             <img class="" src="@GetThumbnailUrl(item)" width="600" height="300" alt="Card image cap">
             <h5 class="text-xl">@item.Name</h5>
@@ -43,7 +55,7 @@
 </script>
 
 @code {
-    private IEnumerable<DAL.Model.Media> _mediaList = [];
+    private IEnumerable<MediaWithWatchStatusViewModel> _mediaList = [];
 
     [SupplyParameterFromQuery(Name = "id")]
     private Guid? Id { get; set; }
@@ -64,28 +76,31 @@
         Navigator.NavigateTo("media?id=" + newId);
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        GetMedia();
+        await GetMediaAsync();
     }
 
-    private void GetMedia()
+    private async Task GetMediaAsync()
     {
-        _mediaList = Id != null ? MediaService.GetMedia(Id.Value) : MediaService.GetMedia();
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        
+        _mediaList = MediaWithWatchStatusService.GetMediaWithWatchStatus(Id, user);
     }
 
-    public string GetThumbnailUrl(DAL.Model.Media media)
+    public string GetThumbnailUrl(MediaWithWatchStatusViewModel media)
     {
         return media.ThumbnailPath != null ? Navigator.BaseUri + "api/media/thumbnail?id=" + media.Id : "movie.png";
     }
 
-    private async Task HandleItemClick(DAL.Model.Media item)
+    private async Task HandleItemClick(MediaWithWatchStatusViewModel item)
     {
         switch (item.Type)
         {
             case MediaType.DIRECTORY:
                 ChangeMediaId(item.Id);
-                GetMedia();
+                await GetMediaAsync();
                 break;
             case MediaType.FILE:
                 // Navigator.NavigateTo("api/media/file?id=" + item.Id);
@@ -94,15 +109,17 @@
                 var fileName = item.Name;
                 await JSRuntime.InvokeVoidAsync("triggerFileDownload", fileName, fileUrl);
                 
+                // Refresh the media list after download to update the watched status
+                await Task.Delay(1000); // Small delay to ensure the watched status is updated
+                await GetMediaAsync();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
     }
 
-    private void CopyLink(DAL.Model.Media item)
+    private void CopyLink(MediaWithWatchStatusViewModel item)
     {
-        JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", Navigator.BaseUri + "api/media/file?path=" + HttpUtility.UrlEncode(item.Path));
+        JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", Navigator.BaseUri + "api/media/file?id=" + item.Id);
     }
-
 }
