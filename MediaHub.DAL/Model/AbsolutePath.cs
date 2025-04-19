@@ -23,4 +23,35 @@ public class AbsolutePath
     {
         return new AbsolutePath(path);
     }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is AbsolutePath other)
+        {
+            return Value == other.Value;
+        }
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return Value.GetHashCode();
+    }
+
+    public static bool operator ==(AbsolutePath left, AbsolutePath right)
+    {
+        if (left is null && right is null) return true;
+        if (left is null || right is null) return false;
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(AbsolutePath left, AbsolutePath right)
+    {
+        return !(left == right);
+    }
+
+    public override string ToString()
+    {
+        return Value;
+    }
 }

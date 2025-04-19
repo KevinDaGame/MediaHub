@@ -28,4 +28,35 @@ public class RelativePath
     {
         return (RelativePath)string.Concat(left.Value, right);
     }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is RelativePath other)
+        {
+            return Value == other.Value;
+        }
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return Value.GetHashCode();
+    }
+
+    public static bool operator ==(RelativePath left, RelativePath right)
+    {
+        if (left is null && right is null) return true;
+        if (left is null || right is null) return false;
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(RelativePath left, RelativePath right)
+    {
+        return !(left == right);
+    }
+
+    public override string ToString()
+    {
+        return Value;
+    }
 }

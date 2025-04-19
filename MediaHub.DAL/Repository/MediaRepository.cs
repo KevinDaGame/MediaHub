@@ -52,9 +52,22 @@ public class MediaRepository
         _context.SaveChanges();
     }
 
+    public void AddMedia(Media media)
+    {
+        _context.Media.Add(media);
+        _context.SaveChanges();
+    }
+    
     public void AddMediaMultiple(IEnumerable<Media> media)
     {
         _context.Media.AddRange(media);
         _context.SaveChanges();
+    }
+
+    public List<Media> GetMediaByPathMultiple(IEnumerable<RelativePath> paths)
+    {
+        return _context.Media
+            .Where(media => paths.Contains(media.Path))
+            .ToList();
     }
 }

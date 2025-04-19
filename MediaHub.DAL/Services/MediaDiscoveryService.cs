@@ -30,51 +30,58 @@ public class MediaDiscoveryService : IMediaDiscoveryService
         CleanupOldMedia();
 
         string rootPath = _mediaPathService.GetAbsolutePath();
-        List<Media> media = DiscoverMedia(rootPath).ToList();
+        int discoveredMediaCount = DiscoverMedia(rootPath);
 
-        _mediaRepository.AddMediaMultiple(media);
-        
-        Console.WriteLine($"Discovered {media.Count} media items");
+        Console.WriteLine($"Discovered {discoveredMediaCount} media items");
     }
 
     private void CleanupOldMedia()
     {
         Console.WriteLine("Cleaning up old media");
         IEnumerable<Media> media = _mediaRepository.GetAllMediaQuery();
-        List<Media> mediaToDelete = media.Where(mediaItem => mediaItem.Type == MediaType.DIRECTORY ? !_fileSystem.Directory.Exists(_mediaPathService.CombineRootPath(mediaItem.Path)) : !_fileSystem.File.Exists(_mediaPathService.CombineRootPath(mediaItem.Path))).ToList();
+        List<Media> mediaToDelete = media.Where(mediaItem =>
+            mediaItem.Type == MediaType.DIRECTORY
+                ? !_fileSystem.Directory.Exists(_mediaPathService.CombineRootPath(mediaItem.Path))
+                : !_fileSystem.File.Exists(_mediaPathService.CombineRootPath(mediaItem.Path))).ToList();
 
         _mediaRepository.DeleteMediaMultiple(mediaToDelete);
-        
+
         Console.WriteLine($"Deleted {mediaToDelete.Count} media items");
     }
 
 
-    public IEnumerable<Media> DiscoverMedia(string path, Guid? parentId = null)
+    public int DiscoverMedia(string path, Guid? parentId = null)
     {
-        List<Media> mediaToAdd = new();
-        foreach (AbsolutePath entry in _fileSystem.Directory.GetFileSystemEntries(path).Select(file => (AbsolutePath) file))
-        {
-            RelativePath cleanPath = _mediaPathService.StripRootPath(entry);
-            Media? media = _mediaRepository.GetMediaByPath(cleanPath);
-            Guid mediaId = media?.Id ?? Guid.NewGuid();
-            if (media == null)
-            {
-                mediaToAdd.Add(new Media
-                {
-                    Id = mediaId,
-                    Path = cleanPath,
-                    Name = _fileSystem.Path.GetFileName(entry),
-                    Type = _fileSystem.Directory.Exists(entry) ? MediaType.DIRECTORY : MediaType.FILE,
-                    ParentId = parentId ?? null
-                });
-            }
+        var discoveredMediaCount = 0;
 
-            if (_fileSystem.Directory.Exists(entry))
+        List<RelativePath> paths = _fileSystem.Directory.GetFileSystemEntries(path)
+            .Select(file => (AbsolutePath)file)
+            .Select(_mediaPathService.StripRootPath)
+            .ToList();
+
+        List<Media> media = _mediaRepository.GetMediaByPathMultiple(paths);
+
+        foreach (RelativePath p in paths)
+        {
+            Media? mediaItem = media.FirstOrDefault(m => m.Path == p);
+            if (mediaItem == null)
             {
-                mediaToAdd.AddRange(DiscoverMedia(entry, mediaId));
+                mediaItem = new Media
+                {
+                    Id = Guid.NewGuid(),
+                    Path = p,
+                    Name = _fileSystem.Path.GetFileName(p),
+                    Type = _fileSystem.Directory.Exists(p) ? MediaType.DIRECTORY : MediaType.FILE,
+                    ParentId = parentId
+                };
+                discoveredMediaCount++;
+                _mediaRepository.AddMedia(mediaItem);
+            }
+            if (_fileSystem.Directory.Exists(p))
+            {
+                discoveredMediaCount += DiscoverMedia(p, mediaItem.Id);
             }
         }
-
-        return mediaToAdd;
+        return discoveredMediaCount;
     }
 }
