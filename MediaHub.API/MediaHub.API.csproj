@@ -46,7 +46,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="media\NewDirectory1\hi\there\my\frend\" />
+        <Content Update="wwwroot\**\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+    
+    <ItemGroup>
       <Folder Include="thumbnails\" />
     </ItemGroup>
 

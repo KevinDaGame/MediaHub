@@ -1,6 +1,7 @@
 ﻿@using System.Web
 @using MediaHub.DAL.Model
 @using MediaHub.DAL.Services
+@using MediaHub.API.Components.Dropdown
 
 @rendermode InteractiveServer
 
@@ -20,12 +21,11 @@
             @onclick="() => HandleItemClick(item)">
             @if (item.Type == MediaType.FILE)
             {
-                <button @onclick:stopPropagation="@true" @onclick="() => CopyLink(item)"
-                        class="absolute right-0 bg-blue-500 hover:bg-blue-400 group-hover:visible invisible m-3 mr-4 p-2 rounded-md shadow">
-                    <i
-                        class="fa-solid fa-link">
-                    </i>
-                </button>
+                <div class="absolute top-3 right-3 z-10">
+                    <Dropdown>
+                        <DropdownItem OnClick="@(() => CopyLink(item))">Copy link</DropdownItem>
+                    </Dropdown>
+                </div>
             }
             <img class="" src="@GetThumbnailUrl(item)" width="600" height="300" alt="Card image cap">
             <h5 class="text-xl">@item.Name</h5>
@@ -41,8 +41,6 @@
     anchorElement.remove();
   }
 </script>
-
-
 
 @code {
     private IEnumerable<DAL.Model.Media> _mediaList = [];

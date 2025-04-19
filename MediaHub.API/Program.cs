@@ -3,6 +3,7 @@ using Auth0.AspNetCore.Authentication;
 using MediaHub.API.Auth;
 using MediaHub.API.Components;
 using MediaHub.API.Service;
+using MediaHub.API.Services;
 using MediaHub.DAL;
 using MediaHub.DAL.Model;
 using MediaHub.DAL.Repository;
@@ -146,6 +147,7 @@ void AddServices(IServiceCollection services)
     
     services.AddSingleton<MediaFileSystemWatcherHostedService>();
     services.AddSingleton<IFileSystem, FileSystem>();
+    services.AddSingleton<DropdownService>();
     
     services.AddHostedService<ThumbnailHostedService>();
     services.AddHostedService<MediaHostedService>();

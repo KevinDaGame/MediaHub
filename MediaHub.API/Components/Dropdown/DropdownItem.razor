@@ -1,0 +1,24 @@
+﻿<li class="px-4 py-2">
+    <a class="block hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" @onclick:stopPropagation="@true" @onclick="HandleClick">@ChildContent</a>
+</li>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+    
+    [CascadingParameter]
+    public Dropdown ParentDropdown { get; set; }
+    
+    private async Task HandleClick()
+    {
+        if (OnClick.HasDelegate)
+        {
+            await OnClick.InvokeAsync();
+        }
+        
+        ParentDropdown?.Close();
+    }
+}
