@@ -1,7 +1,9 @@
 ﻿using System.IO.Abstractions;
 using MediaHub.DAL.Model;
+using MediaHub.DAL.Repository;
 using MediaHub.DAL.Services.MediaPath;
 using MediaHub.DAL.Services.Thumbnail;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MediaHub.DAL.Services;
 
@@ -11,34 +13,35 @@ public class MediaThumbnailService : IMediaThumbnailService
     private readonly ThumbnailPathService _thumbnailPath;
     private readonly ThumbnailContext _thumbnailContext;
     private readonly IFileSystem _fileSystem;
+    private readonly IServiceProvider _serviceProvider;
 
     public MediaThumbnailService(RootPathService rootPath, ThumbnailPathService thumbnailPath,
-        ThumbnailContext thumbnailContext, IFileSystem fileSystem)
+        ThumbnailContext thumbnailContext, IFileSystem fileSystem, IServiceProvider serviceProvider)
     {
         _rootPath = rootPath;
         _thumbnailPath = thumbnailPath;
         _thumbnailContext = thumbnailContext;
         _fileSystem = fileSystem;
+        _serviceProvider = serviceProvider;
     }
 
     public MediaThumbnailService(RootPathService rootPath, ThumbnailPathService thumbnailPath,
-        ThumbnailContext thumbnailContext) : this(rootPath,
+        ThumbnailContext thumbnailContext, IServiceProvider serviceProvider) : this(rootPath,
         thumbnailPath,
         thumbnailContext,
-        new FileSystem())
+        new FileSystem(),
+        serviceProvider)
     {
     }
 
-    public byte[]? GetThumbnail(RelativePath path)
+    public byte[]? GetThumbnail(Media media)
     {
-        AbsolutePath thumbnailPath = _thumbnailPath.CombineRootPath(path + ".webp");
+        if (media.ThumbnailPath == null)
+        {
+            return null;
+        }
+        AbsolutePath thumbnailPath = _thumbnailPath.CombineRootPath(media.ThumbnailPath);
         return _fileSystem.File.Exists(thumbnailPath) ? _fileSystem.File.ReadAllBytes(thumbnailPath) : null;
-    }
-
-    public RelativePath? GetThumbnailPath(RelativePath path)
-    {
-        AbsolutePath thumbnailPath = _thumbnailPath.CombineRootPath(path + ".webp");
-        return _fileSystem.File.Exists(thumbnailPath) ? path : null;
     }
 
     public async Task ExtractThumbnail(RelativePath path)
@@ -48,23 +51,28 @@ public class MediaThumbnailService : IMediaThumbnailService
 
     public void ExtractThumbnailsForMediaFolder()
     {
-        var mediaFiles = _fileSystem.Directory.GetFiles(_rootPath.Path, "*.*", SearchOption.AllDirectories)
-            .Select(file => (AbsolutePath)file)
-            .Select(_rootPath.StripRootPath)
-            .Where(file =>
-                _thumbnailContext.SupportedExtensions.Contains(_fileSystem.Path.GetExtension(file).TrimStart('.')))
-            .Where(file => !_fileSystem.File.Exists(_thumbnailPath.CombineRootPath(file + ".webp")));
+        using var scope = _serviceProvider.CreateScope();
+        var mediaRepository = scope.ServiceProvider.GetRequiredService<MediaRepository>();
 
-        foreach (var mediaFile in mediaFiles)
+        var media = mediaRepository.GetAllMediaQuery()
+            .Where(mediaItem =>
+                mediaItem.Type == MediaType.FILE && mediaItem.ThumbnailPath == null)
+            .Where(mediaItem => _thumbnailContext.SupportedExtensions.Contains(mediaItem.Name.Split('.')[^1]))
+            .ToList();
+
+        foreach (var mediaItem in media)
         {
             try
             {
-                ExtractThumbnail(mediaFile).Wait();
-                Console.WriteLine($"Extracted thumbnail for {mediaFile}");
+                ExtractThumbnail(mediaItem.Path).Wait();
+                // Update the media item with the thumbnail path
+                mediaItem.ThumbnailPath = mediaItem.Path + ".webp";
+                mediaRepository.UpdateMedia(mediaItem);
+                Console.WriteLine($"Extracted thumbnail for {mediaItem.Path}");
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Failed to extract thumbnail for {mediaFile}: {e.Message}");
+                Console.WriteLine($"Failed to extract thumbnail for {mediaItem.Path}: {e.Message}");
             }
         }
     }

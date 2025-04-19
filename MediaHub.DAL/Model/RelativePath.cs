@@ -43,14 +43,14 @@ public class RelativePath
         return Value.GetHashCode();
     }
 
-    public static bool operator ==(RelativePath left, RelativePath right)
+    public static bool operator ==(RelativePath? left, RelativePath? right)
     {
         if (left is null && right is null) return true;
         if (left is null || right is null) return false;
         return left.Equals(right);
     }
 
-    public static bool operator !=(RelativePath left, RelativePath right)
+    public static bool operator !=(RelativePath? left, RelativePath? right)
     {
         return !(left == right);
     }

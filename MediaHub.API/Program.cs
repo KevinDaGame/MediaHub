@@ -16,8 +16,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 
-string rootPath = Directory.GetCurrentDirectory() + "/media";
-string thumbnailPath = Directory.GetCurrentDirectory() + "/thumbnails";
+string rootPath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "media";
+string thumbnailPath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "/thumbnails";
 
 string mysqlConnection = Environment.GetEnvironmentVariable("MYSQL_CONNECTION_STRING");
 

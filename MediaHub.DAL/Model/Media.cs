@@ -8,7 +8,7 @@ public partial class Media
     public Guid? ParentId { get; set; }
     public required string Name { get; set; }
     public required RelativePath Path { get; set; }
-    public string? ThumbnailUrl { get; set; }
+    public RelativePath? ThumbnailPath { get; set; }
     public required MediaType Type { get; set; }
     public IEnumerable<Media> Children { get; set; }
 

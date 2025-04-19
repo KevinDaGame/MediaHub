@@ -78,7 +78,7 @@
 
     public string GetThumbnailUrl(DAL.Model.Media media)
     {
-        return media.ThumbnailUrl != null ? Navigator.BaseUri + "api/media/thumbnail?path=" + HttpUtility.UrlEncode(media.ThumbnailUrl) : "movie.png";
+        return media.ThumbnailPath != null ? Navigator.BaseUri + "api/media/thumbnail?id=" + media.Id : "movie.png";
     }
 
     private async Task HandleItemClick(DAL.Model.Media item)

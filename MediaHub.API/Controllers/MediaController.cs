@@ -55,13 +55,15 @@ public class MediaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("thumbnail")]
-    public IActionResult GetThumbnail([FromQuery] RelativePath path)
+    public IActionResult GetThumbnail([FromQuery] Guid id)
     {
-        var thumbnail = _mediaThumbnailService.GetThumbnail(path);
-        if (thumbnail == null)
+        Media? media = _mediaService.GetMediaItem(id);
+        if (media == null)
         {
             return NotFound();
         }
+        var thumbnail = _mediaThumbnailService.GetThumbnail(media);
+        
         
         return File(thumbnail, "image/webp");
     }

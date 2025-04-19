@@ -4,8 +4,7 @@ namespace MediaHub.DAL.Services;
 
 public interface IMediaThumbnailService
 {
-    public byte[]? GetThumbnail(RelativePath path);
-    public RelativePath? GetThumbnailPath(RelativePath path);
+    public byte[]? GetThumbnail(Media media);
     
     public Task ExtractThumbnail(RelativePath path);
     

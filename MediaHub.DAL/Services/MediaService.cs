@@ -27,9 +27,17 @@ public class MediaService : IMediaService
     {
     }
 
+    public Media? GetMediaItem(Guid id)
+    {
+        return _mediaRepository.GetMediaById(id);
+    }
+
     public IEnumerable<Media> GetMedia()
     {
-        return _mediaRepository.getSubMedia(null);
+        return _mediaRepository.getSubMedia(null)
+            .OrderBy(it => it.Type)
+            .ThenBy(it => it.ExtractNumericValueFromName())
+            .ThenBy(it => it.Name);;
     }
 
     public IEnumerable<Media> GetMedia(Guid id)

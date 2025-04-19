@@ -70,4 +70,10 @@ public class MediaRepository
             .Where(media => paths.Contains(media.Path))
             .ToList();
     }
+
+    public void UpdateMedia(Media mediaItem)
+    {
+        _context.Media.Update(mediaItem);
+        _context.SaveChanges();
+    }
 }

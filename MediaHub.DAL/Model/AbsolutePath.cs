@@ -38,14 +38,14 @@ public class AbsolutePath
         return Value.GetHashCode();
     }
 
-    public static bool operator ==(AbsolutePath left, AbsolutePath right)
+    public static bool operator ==(AbsolutePath? left, AbsolutePath? right)
     {
         if (left is null && right is null) return true;
         if (left is null || right is null) return false;
         return left.Equals(right);
     }
 
-    public static bool operator !=(AbsolutePath left, AbsolutePath right)
+    public static bool operator !=(AbsolutePath? left, AbsolutePath? right)
     {
         return !(left == right);
     }

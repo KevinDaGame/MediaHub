@@ -29,7 +29,7 @@ public class MediaDiscoveryService : IMediaDiscoveryService
         Console.WriteLine("Discovering media");
         CleanupOldMedia();
 
-        string rootPath = _mediaPathService.GetAbsolutePath();
+        AbsolutePath rootPath = _mediaPathService.GetAbsolutePath();
         int discoveredMediaCount = DiscoverMedia(rootPath);
 
         Console.WriteLine($"Discovered {discoveredMediaCount} media items");
@@ -50,7 +50,7 @@ public class MediaDiscoveryService : IMediaDiscoveryService
     }
 
 
-    public int DiscoverMedia(string path, Guid? parentId = null)
+    public int DiscoverMedia(AbsolutePath path, Guid? parentId = null)
     {
         var discoveredMediaCount = 0;
 
@@ -63,6 +63,7 @@ public class MediaDiscoveryService : IMediaDiscoveryService
 
         foreach (RelativePath p in paths)
         {
+            AbsolutePath mediaPath = _mediaPathService.CombineRootPath(p);
             Media? mediaItem = media.FirstOrDefault(m => m.Path == p);
             if (mediaItem == null)
             {
@@ -71,15 +72,15 @@ public class MediaDiscoveryService : IMediaDiscoveryService
                     Id = Guid.NewGuid(),
                     Path = p,
                     Name = _fileSystem.Path.GetFileName(p),
-                    Type = _fileSystem.Directory.Exists(p) ? MediaType.DIRECTORY : MediaType.FILE,
+                    Type = _fileSystem.Directory.Exists(mediaPath) ? MediaType.DIRECTORY : MediaType.FILE,
                     ParentId = parentId
                 };
                 discoveredMediaCount++;
                 _mediaRepository.AddMedia(mediaItem);
             }
-            if (_fileSystem.Directory.Exists(p))
+            if (_fileSystem.Directory.Exists(mediaPath))
             {
-                discoveredMediaCount += DiscoverMedia(p, mediaItem.Id);
+                discoveredMediaCount += DiscoverMedia(mediaPath, mediaItem.Id);
             }
         }
         return discoveredMediaCount;
