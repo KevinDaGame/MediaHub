@@ -29,7 +29,7 @@ public class MediaController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize("read:media")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IEnumerable<Media> GetMedia([FromQuery] Guid? id)
     {
@@ -37,7 +37,7 @@ public class MediaController : ControllerBase
     }
 
     [HttpGet]
-    // [Authorize("read:media")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("file")]
@@ -71,6 +71,7 @@ public class MediaController : ControllerBase
     }
     
     [HttpGet]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("thumbnail")]
@@ -87,7 +88,7 @@ public class MediaController : ControllerBase
     }
     
     [HttpGet]
-    [Authorize("read:media")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [Route("watched")]
     public IActionResult GetWatchedMedia()
@@ -106,7 +107,7 @@ public class MediaController : ControllerBase
     }
     
     [HttpPost]
-    [Authorize("read:media")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("watched/{id}")]
@@ -126,7 +127,7 @@ public class MediaController : ControllerBase
     }
     
     [HttpDelete]
-    [Authorize("read:media")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("watched/{id}")]
