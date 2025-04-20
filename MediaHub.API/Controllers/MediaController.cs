@@ -37,7 +37,7 @@ public class MediaController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize("read:media")]
+    // [Authorize("read:media")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Route("file")]
