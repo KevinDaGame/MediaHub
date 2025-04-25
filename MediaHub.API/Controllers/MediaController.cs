@@ -65,7 +65,7 @@ public class MediaController : ControllerBase
         
         var result = new FileStreamResult(file.OpenRead(), contentType ?? "application/octet-stream");
         
-        Response.Headers["Content-Disposition"] = "inline; filename=" + file.Name;
+        Response.Headers["Content-Disposition"] = "inline; filename*=UTF-8''" + Uri.EscapeDataString(file.Name);
         
         return result;
     }
